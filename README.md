@@ -98,6 +98,41 @@ Open app → Register / Login → Dashboard
 | **v0.2** | Core functionality – storage layer, login, add / complete / edit / delete, upcoming list |
 | **v1.0** | Working product – search, two bug fixes, test plan and demo script |
 
+**Branching strategy**
+
+| Branch | Purpose | Who pushes |
+|---|---|---|
+| `main` | Released, demo-ready versions only | Nobody directly – merged from `Dev` |
+| `Dev` | Integration: everyone's finished work comes together here | Nobody directly – merged by pull request |
+| `Member/Maheli`, `Member/Rachel`, `Member/Rasadi` | Each developer's own work | That member |
+
+Flow: each member pushes to their own branch → opens a **pull request** into `Dev` → Maheli reviews and merges → when `Dev` is tested, it is merged into `main`.
+
+```mermaid
+gitGraph
+    commit id: "Initial commit"
+    branch Dev
+    branch Member/Maheli
+    commit id: "1-6 Maheli" tag: "v0.1"
+    checkout Dev
+    merge Member/Maheli
+    branch Member/Rachel
+    commit id: "7-13 Rachel" tag: "v1.0"
+    checkout Dev
+    merge Member/Rachel
+    branch Member/Rasadi
+    commit id: "14 Rasadi"
+    checkout Dev
+    merge Member/Rasadi
+    checkout Member/Maheli
+    merge Dev
+    commit id: "15 Maheli"
+    checkout Dev
+    merge Member/Maheli
+    checkout main
+    merge Dev
+```
+
 Each commit is one working step:
 
 | # | Commit | Version | By |
@@ -115,6 +150,8 @@ Each commit is one working step:
 | 11 | `docs: add test plan and 90-second demo script` | | Rachel |
 | 12 | `fix(ui): hide dropdown arrow on subject field` | | Rachel |
 | 13 | `chore: rename app to DeadlineDesk to match the repo` | v1.0 | Rachel |
+| 14 | `docs(design): add UI style guide` | | Rasadi |
+| 15 | `docs: add team roles, branching strategy and pre-demo checklist` | | Maheli |
 
 **What changed between versions**
 - **v0.1 → v0.2:** the static screens became a working app – data storage, login, and the full add → view upcoming → complete → edit/delete journey.
@@ -132,13 +169,15 @@ _Fill in during the challenge:_
 - **Part of the system affected:** …
 - **What could break:** …
 - **Decision / how we implemented it:** …
-- **Tested by:** …
+- **Tested by:** Nimna (QA tester)
 
 > Why the change should be easy: data access is isolated in `storage.js` and all validation is in one function (`validateAssignment` in `app.js`). Adding a new field (e.g. "notes" or "marks %") only needs: one input in `index.html`, one rule in `validateAssignment`, and one cell in `rowHTML`.
 
 ---
 
 ## Phase 6 – Break Your Own Software (Test Plan)
+
+**Tester:** Nimna – tried to break the app with the cases below; developers fixed what failed, then Nimna re-tested.
 
 | # | Test | Input | Expected result | Pass / Fail |
 |---|---|---|---|---|
@@ -164,6 +203,8 @@ _Fill in during the challenge:_
 
 ## Phase 7 – 90-Second Demo Script
 
+**Presented by:** Nimna (demo lead). Maheli drives the laptop.
+
 | Time | Say / Do |
 |---|---|
 | 0–15 s | "Our users are university students who forget assignment deadlines. DeadlineDesk keeps every deadline in one place." |
@@ -173,14 +214,28 @@ _Fill in during the challenge:_
 
 ---
 
+### Before the demo – checklist
+
+- [x] We can explain the problem in one sentence.
+- [x] We know who our user is (university students).
+- [x] We have identified our MVP (add → see sorted deadlines → mark done).
+- [x] Our core user journey works.
+- [x] We have tested the application (13 test cases, 2 bugs found and fixed).
+- [x] We have meaningful versions/commits (v0.1, v0.2, v1.0 tags; each developer works on their own branch and merges into `Dev` by pull request).
+- [ ] We can explain what changed after the customer request.
+- [x] Every team member knows what they contributed (see Team Roles).
+- [ ] We can demonstrate the product in 90 seconds (rehearse once with a timer).
+
+---
+
 ## Team Roles
 
-| Member | Role |
-|---|---|
-| Maheli | Problem & design, UI, storage layer, login, add / complete assignments (v0.1 → core) |
-| Rachel | Edit / delete, search, testing & bug fixes, test plan, final release (v0.2 → v1.0) |
-| … | Requirements & demo |
-| … | Tester |
+| Member | Role | Responsibilities | Commits |
+|---|---|---|---|
+| Maheli | Lead Developer | Problem statement, architecture and design doc, page structure, storage layer, login, add assignment and mark as completed, branching strategy, reviews and merges pull requests | 1 – 6 (v0.1), 15 |
+| Rachel | Developer | Edit / delete, search, fixing the bugs found in testing, final release and rename | 7 – 13 (v0.2, v1.0) |
+| Rasadi | UI/UX Designer | Colour palette, layout and wireframe, icon set, hover and animation rules, mobile layout, style guide | 14 |
+| Nimna | QA Tester & Demo Lead | Test plan and test runs (Phase 6), testing the customer change request, pre-demo checklist, presents the 90-second demo | – (tests and reports bugs; does not push code) |
 
 ## Engineering notes / limitations
 - Passwords are hashed with SHA-256 before saving, but because this is front-end only, it is **not** real security – a production app would authenticate on a server.
