@@ -97,6 +97,7 @@ function clearErrors(form) {
    ===================================================================== */
 function showAuth() {
   state.user = null;
+  hidePasswords();
   $("#app-view").classList.add("hidden");
   $("#auth-view").classList.remove("hidden");
   $("#login-username").focus();
@@ -104,6 +105,7 @@ function showAuth() {
 
 function showApp(username) {
   state.user = username;
+  hidePasswords();
   state.assignments = Storage.getAssignments(username);
   $("#current-user").textContent = username;
   $("#auth-view").classList.add("hidden");
@@ -115,9 +117,41 @@ function showApp(username) {
 /* =====================================================================
    AUTH UI
    ===================================================================== */
+
+/* ---------- Show / hide password (customer change request v1.1) ----------
+   One eye button is added to every password box, so new password fields
+   get it automatically. */
+function setPasswordVisible(input, btn, visible) {
+  input.type = visible ? "text" : "password";
+  const label = visible ? "Hide password" : "Show password";
+  btn.innerHTML = `<svg class="icon"><use href="#${visible ? "i-eye-off" : "i-eye"}"/></svg>`;
+  btn.title = label;
+  btn.setAttribute("aria-label", label);
+  btn.setAttribute("aria-pressed", String(visible));
+}
+
+/* Never leave a password showing after logout, login or switching tabs */
+function hidePasswords() {
+  $$(".pw-toggle").forEach((btn) => setPasswordVisible(btn.previousElementSibling, btn, false));
+}
+
+$$('input[type="password"]').forEach((input) => {
+  const btn = document.createElement("button");
+  btn.type = "button";                       // a plain button inside a form would submit it
+  btn.className = "pw-toggle";
+  input.after(btn);
+  input.parentElement.classList.add("has-toggle");
+  setPasswordVisible(input, btn, false);
+  btn.addEventListener("click", () => {
+    setPasswordVisible(input, btn, input.type === "password");
+    input.focus();
+  });
+});
+
 $$("[data-auth-tab]").forEach((tab) => {
   tab.addEventListener("click", () => {
     const which = tab.dataset.authTab;
+    hidePasswords();
     $$("[data-auth-tab]").forEach((t) => t.classList.toggle("active", t === tab));
     $("#login-form").classList.toggle("hidden", which !== "login");
     $("#register-form").classList.toggle("hidden", which !== "register");
