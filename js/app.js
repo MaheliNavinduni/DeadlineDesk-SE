@@ -156,6 +156,7 @@ $("#register-form").addEventListener("submit", (e) => {
 
 $("#logout-btn").addEventListener("click", () => {
   Auth.logout();
+  closeModals();
   showAuth();
   toast("You have been logged out.");
 });
@@ -234,6 +235,78 @@ $("#add-form").addEventListener("submit", (e) => {
   toast(`"${data.title}" added.`);
 });
 
+/* ---------- 2. EDIT ---------- */
+function openEdit(id) {
+  const a = state.assignments.find((x) => x.id === id);
+  if (!a) return;
+  const form = $("#edit-form");
+  clearErrors(form);
+  $("#edit-id").value = a.id;
+  $("#edit-title").value = a.title;
+  $("#edit-subject").value = a.subject;
+  $("#edit-deadline").value = a.deadline;
+  form.querySelector(`input[name=edit-priority][value=${a.priority}]`).checked = true;
+  $("#edit-modal").classList.remove("hidden");
+  $("#edit-title").focus();
+}
+
+$("#edit-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const form = e.target;
+  clearErrors(form);
+
+  const original = state.assignments.find((x) => x.id === $("#edit-id").value);
+  if (!original) { closeModals(); return; }
+
+  const data = {
+    title: cleanText($("#edit-title").value),
+    subject: cleanText($("#edit-subject").value),
+    deadline: $("#edit-deadline").value,
+    priority: form.querySelector("input[name=edit-priority]:checked")?.value
+  };
+
+  const error = validateAssignment(data, original);
+  if (error) {
+    const fieldInput = { title: "#edit-title", subject: "#edit-subject", deadline: "#edit-deadline" }[error.field];
+    showError("#edit-error", error.msg, fieldInput && $(fieldInput));
+    return;
+  }
+
+  const backup = { ...original };
+  Object.assign(original, data);
+  if (!persist()) { Object.assign(original, backup); return; }
+
+  closeModals();
+  render();
+  toast("Changes saved.");
+});
+
+/* ---------- 2b. DELETE (with confirmation) ---------- */
+function openDelete(id) {
+  const a = state.assignments.find((x) => x.id === id);
+  if (!a) return;
+  state.deleteId = id;
+  $("#delete-name").textContent = a.title;
+  $("#delete-modal").classList.remove("hidden");
+}
+
+$("#confirm-delete").addEventListener("click", () => {
+  const id = state.deleteId;
+  const index = state.assignments.findIndex((x) => x.id === id);
+  closeModals();
+  if (index === -1) return;
+
+  const [removed] = state.assignments.splice(index, 1);
+  if (!persist()) { state.assignments.splice(index, 0, removed); return; }
+
+  const row = document.querySelector(`.assignment[data-id="${id}"]`);
+  const done = () => { render(); toast(`"${removed.title}" deleted.`); };
+  if (row) {
+    row.classList.add("removing");
+    row.addEventListener("animationend", done, { once: true });
+  } else done();
+});
+
 /* ---------- 4. MARK AS COMPLETED (toggle) ---------- */
 function toggleComplete(id) {
   const a = state.assignments.find((x) => x.id === id);
@@ -251,7 +324,18 @@ $("#assignment-list").addEventListener("click", (e) => {
   if (!btn) return;
   const id = btn.closest(".assignment").dataset.id;
   if (btn.dataset.action === "toggle") toggleComplete(id);
+  if (btn.dataset.action === "edit") openEdit(id);
+  if (btn.dataset.action === "delete") openDelete(id);
 });
+
+/* ---------- Modals ---------- */
+function closeModals() {
+  $$(".modal-backdrop").forEach((m) => m.classList.add("hidden"));
+  state.deleteId = null;
+}
+$$("[data-close-modal]").forEach((b) => b.addEventListener("click", closeModals));
+$$(".modal-backdrop").forEach((m) => m.addEventListener("click", (e) => { if (e.target === m) closeModals(); }));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModals(); });
 
 /* ---------- 3. VIEW UPCOMING: filters + search ---------- */
 function setFilter(filter) {
@@ -303,6 +387,8 @@ function rowHTML(a, index) {
       <div><span class="cell-label">Status</span>${status}</div>
       <div class="a-actions">
         ${toggleBtn}
+        <button class="icon-btn" data-action="edit" title="Edit" aria-label="Edit"><svg class="icon"><use href="#i-edit"/></svg></button>
+        <button class="icon-btn delete" data-action="delete" title="Delete" aria-label="Delete"><svg class="icon"><use href="#i-trash"/></svg></button>
       </div>
     </li>`;
 }
