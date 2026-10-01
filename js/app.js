@@ -74,7 +74,7 @@ function toast(message, type = "success") {
   $("#toast-wrap").appendChild(el);
   setTimeout(() => {
     el.classList.add("hide");
-    el.addEventListener("animationend", () => el.remove());
+    setTimeout(() => el.remove(), 300);   // timer, not animationend: works with animations off
   }, 2600);
 }
 
@@ -304,12 +304,11 @@ $("#confirm-delete").addEventListener("click", () => {
   const [removed] = state.assignments.splice(index, 1);
   if (!persist()) { state.assignments.splice(index, 0, removed); return; }
 
+  // Play the slide-out, then re-render. A timer is used instead of "animationend"
+  // because that event never fires when animations are turned off.
   const row = document.querySelector(`.assignment[data-id="${id}"]`);
-  const done = () => { render(); toast(`"${removed.title}" deleted.`); };
-  if (row) {
-    row.classList.add("removing");
-    row.addEventListener("animationend", done, { once: true });
-  } else done();
+  if (row) row.classList.add("removing");
+  setTimeout(() => { render(); toast(`"${removed.title}" deleted.`); }, row ? 300 : 0);
 });
 
 /* ---------- 4. MARK AS COMPLETED (toggle) ---------- */
