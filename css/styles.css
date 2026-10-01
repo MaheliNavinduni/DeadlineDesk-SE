@@ -90,6 +90,10 @@ input[type="text"], input[type="password"], input[type="date"], input[type="sear
 input:focus { outline: none; border-color: var(--violet); background: #fff; box-shadow: 0 0 0 4px rgba(190, 41, 236, .15); }
 input.invalid { border-color: var(--danger); animation: shake .35s; }
 
+/* Subject suggestions (datalist): hide the browser's dropdown arrow so it doesn't
+   look like a select box. Suggestions still appear while typing. */
+input[list]::-webkit-calendar-picker-indicator { display: none !important; }
+
 .input-icon { position: relative; }
 .input-icon .icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .input-icon input { padding-left: 40px; }
