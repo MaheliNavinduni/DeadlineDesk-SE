@@ -1,4 +1,4 @@
-# DueSoon – Assignment Deadline Tracker
+# DeadlineDesk – Assignment Deadline Tracker
 
 ICT 2223 – 105-Minute Software Engineering Challenge
 
@@ -100,19 +100,25 @@ Open app → Register / Login → Dashboard
 
 Each commit is one working step:
 
-| # | Commit | Version |
-|---|---|---|
-| 1 | `docs: define problem, MVP and design` | |
-| 2 | `feat(ui): build page layout, purple theme and icon set` | v0.1 |
-| 3 | `feat(storage): add localStorage data layer with safe JSON parsing` | |
-| 4 | `feat(auth): add register, login and logout with hashed passwords` | |
-| 5 | `feat(assignments): add assignments and show upcoming deadlines` | |
-| 6 | `feat(assignments): mark assignments as completed` | |
-| 7 | `feat(assignments): edit and delete with confirmation` | v0.2 |
-| 8 | `feat: add search and keep open tabs in sync` | |
-| 9 | `fix: use local time for dates (wrong day in UTC+5:30)` | |
-| 10 | `fix: refresh list after delete when animations are off` | |
-| 11 | `docs: add test plan and 90-second demo script` | v1.0 |
+| # | Commit | Version | By |
+|---|---|---|---|
+| 1 | `docs: define problem, MVP and design` | | Maheli |
+| 2 | `feat(ui): build page layout, purple theme and icon set` | v0.1 | Maheli |
+| 3 | `feat(storage): add localStorage data layer with safe JSON parsing` | | Maheli |
+| 4 | `feat(auth): add register, login and logout with hashed passwords` | | Maheli |
+| 5 | `feat(assignments): add assignments and show upcoming deadlines` | | Maheli |
+| 6 | `feat(assignments): mark assignments as completed` | | Maheli |
+| 7 | `feat(assignments): edit and delete with confirmation` | v0.2 | Rachel |
+| 8 | `feat: add search and keep open tabs in sync` | | Rachel |
+| 9 | `fix: use local time for dates (wrong day in UTC+5:30)` | | Rachel |
+| 10 | `fix: refresh list after delete when animations are off` | | Rachel |
+| 11 | `docs: add test plan and 90-second demo script` | | Rachel |
+| 12 | `fix(ui): hide dropdown arrow on subject field` | | Rachel |
+| 13 | `chore: rename app to DeadlineDesk to match the repo` | v1.0 | Rachel |
+
+**What changed between versions**
+- **v0.1 → v0.2:** the static screens became a working app – data storage, login, and the full add → view upcoming → complete → edit/delete journey.
+- **v0.2 → v1.0:** search, two bugs found in testing and fixed, UI polish, the test plan and the final name.
 
 Run `git log --oneline` to see the commits.
 
@@ -160,7 +166,7 @@ _Fill in during the challenge:_
 
 | Time | Say / Do |
 |---|---|
-| 0–15 s | "Our users are university students who forget assignment deadlines. DueSoon keeps every deadline in one place." |
+| 0–15 s | "Our users are university students who forget assignment deadlines. DeadlineDesk keeps every deadline in one place." |
 | 15–60 s | Register → add "Report 1 / Networking / High" → add "Lab 2" → show sorted Upcoming list and 7-day panel → mark Lab 2 complete → edit → delete with confirmation. Try a past date to show validation. |
 | 60–75 s | "Our MVP is add → see sorted deadlines → mark done. Key engineering decision: we separated UI, logic and storage, so we can swap localStorage for a real database by changing only `storage.js`." |
 | 75–90 s | "When the customer asked for ___, we changed ___ and re-tested ___." |
@@ -171,9 +177,9 @@ _Fill in during the challenge:_
 
 | Member | Role |
 |---|---|
+| Maheli | Problem & design, UI, storage layer, login, add / complete assignments (v0.1 → core) |
+| Rachel | Edit / delete, search, testing & bug fixes, test plan, final release (v0.2 → v1.0) |
 | … | Requirements & demo |
-| … | UI (HTML / CSS) |
-| … | Logic & storage (JavaScript) |
 | … | Tester |
 
 ## Engineering notes / limitations
