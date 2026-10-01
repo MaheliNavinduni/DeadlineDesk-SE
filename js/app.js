@@ -20,12 +20,17 @@ const MAX_YEARS_AHEAD = 2;
 
 /* ---------------------------------------------------------------------
    Date helpers
+   Dates are handled in LOCAL time on purpose. toISOString() gives the UTC
+   date, which in Sri Lanka (UTC+5:30) is still "yesterday" between 00:00
+   and 05:30, and new Date("2026-10-05") is read as UTC midnight.
    --------------------------------------------------------------------- */
 function parseDate(iso) {
-  return new Date(iso);
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
 }
 function daysUntil(iso) {
   const ms = parseDate(iso) - parseDate(todayISO());
