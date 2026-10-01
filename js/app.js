@@ -234,6 +234,25 @@ $("#add-form").addEventListener("submit", (e) => {
   toast(`"${data.title}" added.`);
 });
 
+/* ---------- 4. MARK AS COMPLETED (toggle) ---------- */
+function toggleComplete(id) {
+  const a = state.assignments.find((x) => x.id === id);
+  if (!a) return;
+  a.completed = !a.completed;
+  a.completedAt = a.completed ? new Date().toISOString() : null;
+  if (!persist()) { a.completed = !a.completed; return; }
+  render();
+  toast(a.completed ? `"${a.title}" marked as completed.` : `"${a.title}" moved back to pending.`);
+}
+
+/* List buttons use one delegated listener */
+$("#assignment-list").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+  const id = btn.closest(".assignment").dataset.id;
+  if (btn.dataset.action === "toggle") toggleComplete(id);
+});
+
 /* ---------- 3. VIEW UPCOMING: filters + search ---------- */
 function setFilter(filter) {
   state.filter = filter;
@@ -270,6 +289,10 @@ function rowHTML(a, index) {
       ? `<span class="status overdue"><svg class="icon"><use href="#i-alert"/></svg>Overdue</span>`
       : `<span class="status pending"><svg class="icon"><use href="#i-clock"/></svg>Pending</span>`;
 
+  const toggleBtn = a.completed
+    ? `<button class="icon-btn" data-action="toggle" title="Mark as pending" aria-label="Mark as pending"><svg class="icon"><use href="#i-undo"/></svg></button>`
+    : `<button class="icon-btn done" data-action="toggle" title="Mark as completed" aria-label="Mark as completed"><svg class="icon"><use href="#i-check"/></svg></button>`;
+
   return `
     <li class="assignment p-${a.priority} ${a.completed ? "is-done" : ""} ${overdue ? "is-overdue" : ""}"
         data-id="${a.id}" style="animation-delay:${Math.min(index * 40, 400)}ms">
@@ -278,7 +301,9 @@ function rowHTML(a, index) {
       <div class="a-deadline"><span class="cell-label">Deadline</span>${formatDate(a.deadline)}<small class="${due.cls}">${due.text}</small></div>
       <div><span class="cell-label">Priority</span><span class="pill ${a.priority}">${capitalise(a.priority)}</span></div>
       <div><span class="cell-label">Status</span>${status}</div>
-      <div class="a-actions"></div>
+      <div class="a-actions">
+        ${toggleBtn}
+      </div>
     </li>`;
 }
 
