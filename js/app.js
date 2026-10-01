@@ -343,6 +343,7 @@ function setFilter(filter) {
   $$("#filter-tabs .tab").forEach((t) => t.classList.toggle("active", t.dataset.filter === filter));
 }
 $$("#filter-tabs .tab").forEach((tab) => tab.addEventListener("click", () => { setFilter(tab.dataset.filter); render(); }));
+$("#search").addEventListener("input", (e) => { state.search = e.target.value.trim().toLowerCase(); render(); });
 
 /* Soonest deadline first, then highest priority */
 function byDeadline(a, b) {
@@ -429,6 +430,14 @@ function render() {
   const subjects = [...new Set(all.map((a) => a.subject))].sort();
   $("#subject-list").innerHTML = subjects.map((s) => `<option value="${escapeHTML(s)}">`).join("");
 }
+
+/* Keep multiple open tabs in sync */
+window.addEventListener("storage", () => {
+  const user = Auth.currentUser();
+  if (!user) { if (state.user) showAuth(); return; }
+  if (user !== state.user) showApp(user);
+  else { state.assignments = Storage.getAssignments(user); render(); }
+});
 
 /* =====================================================================
    START
