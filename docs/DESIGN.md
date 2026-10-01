@@ -1,6 +1,8 @@
-# DueSoon – Design
+# DeadlineDesk – Design
 
 Phase 3 of the 105-Minute Challenge: architecture, components, data storage and user flow.
+
+Visual design (colours, fonts, icons, animations, mobile layout): **[STYLE-GUIDE.md](STYLE-GUIDE.md)**
 
 ---
 
@@ -156,7 +158,7 @@ stateDiagram-v2
 
 ```
 +---------------------------------------------------------------+
-| [cap] DueSoon                              (user)  [Logout]   |
+| [cap] DeadlineDesk                         (user)  [Logout]   |
 +---------------------------------------------------------------+
 | [Total 4]   [Pending 3]   [Completed 1]   [Overdue 1]         |
 +--------------------+------------------------------------------+
