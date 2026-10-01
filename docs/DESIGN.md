@@ -2,6 +2,8 @@
 
 Phase 3 of the 105-Minute Challenge: architecture, components, data storage and user flow.
 
+Visual design (colours, fonts, icons, animations, mobile layout): **[STYLE-GUIDE.md](STYLE-GUIDE.md)**
+
 ---
 
 ## 1. Architecture (layered)
