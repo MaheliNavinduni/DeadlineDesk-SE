@@ -98,6 +98,20 @@ input[list]::-webkit-calendar-picker-indicator { display: none !important; }
 .input-icon .icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .input-icon input { padding-left: 40px; }
 
+/* Show / hide password button (customer change request v1.1) */
+.input-icon.has-toggle input { padding-right: 46px; }
+.pw-toggle {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px; border: none; border-radius: 9px; cursor: pointer;
+  display: grid; place-items: center; background: transparent; color: var(--muted);
+  transition: background .2s, color .2s;
+}
+.pw-toggle:hover { background: var(--lilac-100); color: var(--plum); }
+.pw-toggle:focus-visible { outline: 2px solid var(--violet); outline-offset: 1px; }
+.input-icon .pw-toggle .icon { position: static; transform: none; color: inherit; }
+/* Edge adds its own eye icon to password boxes - hide it so there aren't two */
+input::-ms-reveal { display: none; }
+
 .form-error { min-height: 1.3em; font-size: .85rem; color: var(--danger); margin-bottom: 8px; }
 
 /* Priority pills */

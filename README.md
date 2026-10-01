@@ -97,6 +97,7 @@ Open app → Register / Login → Dashboard
 | **v0.1** | Basic interface – HTML structure, purple theme, layout, icons |
 | **v0.2** | Core functionality – storage layer, login, add / complete / edit / delete, upcoming list |
 | **v1.0** | Working product – search, two bug fixes, test plan and demo script |
+| **v1.1** | Customer change request – show / hide password button on the login page |
 
 **Branching strategy**
 
@@ -152,6 +153,8 @@ Each commit is one working step:
 | 13 | `chore: rename app to DeadlineDesk to match the repo` | v1.0 | Rachel |
 | 14 | `docs(design): add UI style guide` | | Rasadi |
 | 15 | `docs: add team roles, branching strategy and pre-demo checklist` | | Maheli |
+| 16 | `feat(auth): show/hide password button (customer change request)` | | Maheli |
+| 17 | `docs: record change request impact and tests` | v1.1 | Maheli |
 
 **What changed between versions**
 - **v0.1 → v0.2:** the static screens became a working app – data storage, login, and the full add → view upcoming → complete → edit/delete journey.
@@ -165,10 +168,14 @@ Run `git log --oneline` to see the commits.
 
 _Fill in during the challenge:_
 
-- **Requested change:** …
-- **Part of the system affected:** …
-- **What could break:** …
-- **Decision / how we implemented it:** …
+- **Requested change:** "Add a password icon on the login page so users can check their password after typing it."
+- **Part of the system affected:** only the login / register screen (UI layer): the 3 password boxes in `index.html`, a few CSS rules and one block in `app.js`. Storage, login logic and assignments are **not** affected.
+- **What could break:**
+  1. A button inside a form submits the form by default → clicking the eye would try to log in. We made it `type="button"`.
+  2. Microsoft Edge already shows its own eye icon on password boxes → users would see **two** eyes. We hide Edge's built-in one.
+  3. Security: a revealed password could stay visible for the next person. It is hidden again after login, logout and when switching Login/Register tabs.
+  4. The eye could cover long passwords → the box got extra right padding.
+- **Decision / how we implemented it:** accepted – small, useful, low risk. Instead of copying the button into the HTML three times, one function adds an eye button to **every** password box automatically (login, register, confirm), so any future password field gets it for free. The icon switches between eye / crossed-out eye and the button has a screen-reader label ("Show password" / "Hide password"). Built on `Member/Maheli`, merged by pull request into `Dev` and released to `main` as **v1.1**.
 - **Tested by:** Nimna (QA tester)
 
 > Why the change should be easy: data access is isolated in `storage.js` and all validation is in one function (`validateAssignment` in `app.js`). Adding a new field (e.g. "notes" or "marks %") only needs: one input in `index.html`, one rule in `validateAssignment`, and one cell in `rowHTML`.
@@ -194,6 +201,9 @@ _Fill in during the challenge:_
 | 11 | Corrupted storage | Broken JSON in localStorage | App still loads (falls back to empty list) | Pass |
 | 12 | Edit into a duplicate | Rename an item to match another | Duplicate error, nothing changed | Pass |
 | 13 | Animations turned off | Windows "reduce motion" on, then delete an item | Row disappears, stats update, toast closes | Fail → fixed → Pass |
+| 14 | Change request – show password | Type a password, click the eye | Password shows as text, icon changes to crossed-out eye, form is **not** submitted | Pass |
+| 15 | Change request – hide again | Click the eye again; also log in / log out / switch tabs | Password hidden again (dots) every time | Pass |
+| 16 | Change request – regression | Log in and register with the password shown | Login and register still work exactly as before | Pass |
 
 **Bug 1 we found and fixed (test 13):** after deleting, the list only refreshed when the slide-out animation sent an `animationend` event. With animations turned off (reduced-motion setting or a background tab) that event never fires, so the deleted row stayed on screen and toasts never closed. We now use a short timer instead.
 
@@ -210,7 +220,7 @@ _Fill in during the challenge:_
 | 0–15 s | "Our users are university students who forget assignment deadlines. DeadlineDesk keeps every deadline in one place." |
 | 15–60 s | Register → add "Report 1 / Networking / High" → add "Lab 2" → show sorted Upcoming list and 7-day panel → mark Lab 2 complete → edit → delete with confirmation. Try a past date to show validation. |
 | 60–75 s | "Our MVP is add → see sorted deadlines → mark done. Key engineering decision: we separated UI, logic and storage, so we can swap localStorage for a real database by changing only `storage.js`." |
-| 75–90 s | "When the customer asked for ___, we changed ___ and re-tested ___." |
+| 75–90 s | "The customer asked for a password icon on the login page. Only the login screen was affected. We added one eye button to every password box, made sure it doesn't submit the form or leave the password showing after logout, and re-tested login and register – released as v1.1." |
 
 ---
 
@@ -222,7 +232,7 @@ _Fill in during the challenge:_
 - [x] Our core user journey works.
 - [x] We have tested the application (13 test cases, 2 bugs found and fixed).
 - [x] We have meaningful versions/commits (v0.1, v0.2, v1.0 tags; each developer works on their own branch and merges into `Dev` by pull request).
-- [ ] We can explain what changed after the customer request.
+- [x] We can explain what changed after the customer request (v1.1 – show / hide password).
 - [x] Every team member knows what they contributed (see Team Roles).
 - [ ] We can demonstrate the product in 90 seconds (rehearse once with a timer).
 
